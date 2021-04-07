@@ -1,0 +1,13 @@
+* General
+All values in a BST are either bigger or equal to a compared value. That means, all crawling functions can navigate in a forward direction just by doing $$<>$$ comparisons without having to climb back up a tree.
+
+* Functions
+a. find
+b. insert
+c. delete
+d. level_order
+e. inorder, preorder, and postorder
+f. height
+g. depth
+h. balanced?
+i. rebalance

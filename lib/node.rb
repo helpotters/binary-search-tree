@@ -1,10 +1,11 @@
-# lib/node.rb
+#!/usr/bin/env ruby
 
+# Points to other left or right nodes
 class Node
-  attr_accessor :left, :right, :value
+  attr_accessor :data, :left, :right
 
-  def initialize
-    @value = nil
+  def initialize(data = nil)
+    @data = data
     @left = nil
     @right = nil
   end
