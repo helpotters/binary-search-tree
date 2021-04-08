@@ -1,6 +1,8 @@
 require_relative('./node')
 
 # Creates and manages a binary tree
+#   node: linked value with/out children
+#   leaf: last node in a branch
 class Tree
   attr_accessor :root
 
@@ -9,6 +11,7 @@ class Tree
     @root = build_tree(@inputs)
   end
 
+  # build_tree: forms a network of linked nodes
   def build_tree(inputs)
     return nil if inputs.empty?
 
@@ -24,6 +27,7 @@ class Tree
     node
   end
 
+  # insert: appends value to as a leaf
   def insert(value, node = root)
     return nil if value == node.data
 
@@ -34,6 +38,7 @@ class Tree
     end
   end
 
+  # delete: removes a selected value and reconnects the children, if exists
   def delete(value, node = find(value))
     parent = parent_node(value)
 
@@ -46,6 +51,7 @@ class Tree
     end
   end
 
+  # find: locates a node that contains the datavalue, if available
   def find(value, node = root)
     return node if value == node.data
 
@@ -56,23 +62,19 @@ class Tree
     end
   end
 
-  def parent_node(value, node = root)
-    return nil if root.data == value
-    return node if node.left.data == value || node.right.data == value
-
-    node.data > value ? parent_node(value, node.left) : parent_node(value, node.right)
-  end
-
   # TODO
-  def level_order(node = root)
-    # Part 1
-    # Move through each node in at a particular level
-    # Maintain a queue: store discovered node and its children into a queue
-    # Obtain an ordered queue
-    # Part 2
-    # Return the data of all the nodes in the queue
+  # level_order: goes through and returns datavalues in breadth-order
+  def level_order(node = root, queue = [])
+    print "#{node.data}, "
+    queue << node.left unless node.left.nil?
+    queue << node.right unless node.right.nil?
+    return if queue.empty?
+
+    level_order(queue.shift, queue)
+    # queue.shift removes a value and moves the array over by one
   end
 
+  # inorder: prints smallest to largest
   def inorder(node = root)
     return if node.nil?
 
@@ -81,6 +83,7 @@ class Tree
     inorder(node.right)
   end
 
+  # preorder: prints from root to smallest to largest
   def preorder(node = root)
     return if node.nil?
 
@@ -89,6 +92,7 @@ class Tree
     inorder(node.right)
   end
 
+  # postorder: prints largest to smallest
   def postorder(node = root)
     return if node.nil?
 
@@ -98,8 +102,14 @@ class Tree
   end
 
   # TODO
-  def height(node = root); end
+  # height: returns the number of edges from a node to the nearest leaf
+  def height(node = root)
+    return -1 if node.nil?
 
+    [height(node.left), height(node.right)].max + 1
+  end
+
+  # depth: returns the number of edges from root to the nearest leaf node
   def depth(value, node = root)
     return 0 if node.data == value # root node is 0 edges
 
@@ -113,9 +123,11 @@ class Tree
   end
 
   # TODO
+  # balanced: checks if the depth of any side of a node no more than 1 edge
   def balanced?(node = root); end
 
   # TODO
+  # rebalance: after some changes, a tree can be rebuilt
   def rebalance; end
 
   def pretty_print(node = @root, prefix = '', is_left = true)
@@ -126,10 +138,20 @@ class Tree
 
   private
 
+  # parent_node: returns the immediate parent of any given node
+  def parent_node(value, node = root)
+    return nil if root.data == value
+    return node if node.left.data == value || node.right.data == value
+
+    node.data > value ? parent_node(value, node.left) : parent_node(value, node.right)
+  end
+
+  # delete_leaf:
   def delete_leaf(value, parent)
     parent.left.data == value ? parent.left = nil : parent.right = nil
   end
 
+  # delete_single_child:
   def delete_single_child(value, parent, node)
     case parent.left.data == value
     when true # Is Left
@@ -139,6 +161,7 @@ class Tree
     end
   end
 
+  # delete_double_child:
   def delete_double_child(_value, parent, node)
     leafmost = leafmost_left(node.right)
 
@@ -156,6 +179,7 @@ class Tree
     end
   end
 
+  # swap_nodes:
   def swap_nodes(one, two, parent, direction)
     two.left = one.left
     two.right = one.right
@@ -163,6 +187,7 @@ class Tree
     parent.left =  two if direction == 'left'
   end
 
+  # leafmost_left:
   def leafmost_left(node)
     return node if node.left.nil?
 
