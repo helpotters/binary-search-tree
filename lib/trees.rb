@@ -40,6 +40,8 @@ class Tree
 
   # delete: removes a selected value and reconnects the children, if exists
   def delete(value, node = find(value))
+    return nil if node.nil?
+
     parent = parent_node(value)
 
     if node.left.nil? && node.right.nil? # no children
@@ -62,10 +64,9 @@ class Tree
     end
   end
 
-  # TODO
   # level_order: goes through and returns datavalues in breadth-order
   def level_order(node = root, queue = [])
-    print "#{node.data}, "
+    node.data
     queue << node.left unless node.left.nil?
     queue << node.right unless node.right.nil?
     return if queue.empty?
@@ -75,12 +76,21 @@ class Tree
   end
 
   # inorder: prints smallest to largest
-  def inorder(node = root)
+  def inorder(node = root, _array = [])
     return if node.nil?
 
     inorder(node.left)
     puts node.data
     inorder(node.right)
+  end
+
+  def inorder_array(node = root, array = [])
+    return if node.nil?
+
+    inorder_array(node.left, array)
+    array << node.data
+    inorder_array(node.right, array)
+    array
   end
 
   # preorder: prints from root to smallest to largest
@@ -101,7 +111,6 @@ class Tree
     puts node.data
   end
 
-  # TODO
   # height: returns the number of edges from a node to the nearest leaf
   def height(node = root)
     return -1 if node.nil?
@@ -122,13 +131,18 @@ class Tree
     end
   end
 
-  # TODO
   # balanced: checks if the depth of any side of a node no more than 1 edge
-  def balanced?(node = root); end
+  def balanced?(node = root)
+    height(node.left) == height(node.right) ||
+      height(node.left) == height(node.right) + 1 ||
+      height(node.left) == height(node.right) - 1
+  end
 
-  # TODO
   # rebalance: after some changes, a tree can be rebuilt
-  def rebalance; end
+  def rebalance
+    array = inorder_array
+    @root = build_tree(array)
+  end
 
   def pretty_print(node = @root, prefix = '', is_left = true)
     pretty_print(node.right, "#{prefix}#{is_left ? '│   ' : '    '}", false) if node.right

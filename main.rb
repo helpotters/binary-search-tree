@@ -41,6 +41,8 @@ tree.delete(3)
 tree.delete(99)
 tree.delete(100)
 tree.delete(1818)
+tree.delete(5)
+tree.delete(13)
 tree.pretty_print
 
 # Height and Depth
@@ -48,3 +50,6 @@ tree.depth(65)
 
 tree.level_order
 tree.height
+tree.rebalance
+tree.pretty_print
+tree.balanced?
